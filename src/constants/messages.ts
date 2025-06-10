@@ -20,5 +20,6 @@ export const USERS_MESSAGES = {
   CONFIRM_PASSWORD_MUST_MATCH_PASSWORD: 'Confirm password must match password',
   DATE_OF_BIRTH_MUST_BE_ISO8601: 'Date of birth must be a valid ISO8601 date',
   LOGIN_SUCCESS: 'Login successful',
-  REGISTER_SUCCESS: 'Register successful'
+  REGISTER_SUCCESS: 'Register successful',
+  ACCESS_TOKEN_IS_REQUIRED: 'Access token is required'
 } as const
