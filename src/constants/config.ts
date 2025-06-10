@@ -1,5 +1,6 @@
+import { config } from 'dotenv'
 import ms from 'ms'
-
+config()
 interface JWTConfig {
   ACCESS_TOKEN_EXPIRES_IN: number
   REFRESH_TOKEN_EXPIRES_IN: number

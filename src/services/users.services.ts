@@ -1,10 +1,12 @@
-import User from '~/models/schemas/User.schemas'
+import User from '~/models/schemas/User.schema'
 import databaseService from './database.services'
 import { RegisterReqBody } from '~/models/requests/User.requests'
 import { signToken } from '~/utils/jwt'
 import { TokenType } from '~/constants/enums'
 import { hashPassword } from '~/utils/crypto'
 import { JWT_CONFIG } from '~/constants/config'
+import RefreshToken from '~/models/schemas/RefreshToken.schema'
+import { ObjectId } from 'mongodb'
 
 class UsersService {
   private signAccessToken(user_id: string) {
@@ -18,6 +20,7 @@ class UsersService {
       }
     })
   }
+
   private signRefreshToken(user_id: string) {
     return signToken({
       payload: {
@@ -29,6 +32,25 @@ class UsersService {
       }
     })
   }
+
+  private signAccessAndRefreshToken(user_id: string) {
+    return Promise.all([this.signAccessToken(user_id), this.signRefreshToken(user_id)])
+  }
+
+  async login(user_id: string) {
+    const [accessToken, refreshToken] = await this.signAccessAndRefreshToken(user_id)
+    await databaseService.refreshTokens.insertOne(
+      new RefreshToken({
+        user_id: new ObjectId(user_id),
+        token: refreshToken
+      })
+    )
+    return {
+      accessToken,
+      refreshToken
+    }
+  }
+
   async register(payload: RegisterReqBody) {
     const result = await databaseService.users.insertOne(
       new User({
@@ -38,16 +60,19 @@ class UsersService {
       })
     )
     const user_id = result.insertedId.toString()
-    const [accessToken, refreshToken] = await Promise.all([
-      this.signAccessToken(user_id),
-      this.signRefreshToken(user_id)
-    ])
-
+    const [accessToken, refreshToken] = await this.signAccessAndRefreshToken(user_id)
+    await databaseService.refreshTokens.insertOne(
+      new RefreshToken({
+        user_id: new ObjectId(user_id),
+        token: refreshToken
+      })
+    )
     return {
       accessToken,
       refreshToken
     }
   }
+
   async checkEmailExists(email: string) {
     const user = await databaseService.users.findOne({ email })
     return !!user
