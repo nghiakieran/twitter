@@ -8,6 +8,7 @@ import { signToken } from '~/utils/jwt'
 import { hashPassword } from '~/utils/crypto'
 import { TokenType, UserVerifyStatus } from '~/constants/enums'
 import { JWT_CONFIG } from '~/constants/config'
+import { USERS_MESSAGES } from '~/constants/messages'
 
 class UsersService {
   private signAccessToken(user_id: string) {
@@ -105,7 +106,7 @@ class UsersService {
   async verifyEmail(user_id: string) {
     const [token] = await Promise.all([
       this.signAccessAndRefreshToken(user_id),
-      databaseService.users.updateOne(
+      await databaseService.users.updateOne(
         { _id: new ObjectId(user_id) },
         {
           $set: { email_verify_token: '', verify: UserVerifyStatus.Verified },
@@ -119,6 +120,23 @@ class UsersService {
     return {
       access_token,
       refresh_token
+    }
+  }
+
+  async resendVerifyEmail(user_id: string) {
+    const email_verify_token = await this.signEmailVerifyToken(user_id)
+    console.log('Resend verify email token: ', email_verify_token)
+    await databaseService.users.updateOne(
+      { _id: new ObjectId(user_id) },
+      {
+        $set: { email_verify_token },
+        $currentDate: {
+          updated_at: true
+        }
+      }
+    )
+    return {
+      message: USERS_MESSAGES.RESEND_VERIFY_EMAIL_SUCCESS
     }
   }
 }
