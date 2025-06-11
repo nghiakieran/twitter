@@ -21,5 +21,9 @@ export const USERS_MESSAGES = {
   DATE_OF_BIRTH_MUST_BE_ISO8601: 'Date of birth must be a valid ISO8601 date',
   LOGIN_SUCCESS: 'Login successful',
   REGISTER_SUCCESS: 'Register successful',
-  ACCESS_TOKEN_IS_REQUIRED: 'Access token is required'
+  LOGOUT_SUCCESS: 'Logout successful',
+  ACCESS_TOKEN_IS_REQUIRED: 'Access token is required',
+  REFRESH_TOKEN_IS_REQUIRED: 'Refresh token is required',
+  REFRESH_TOKEN_IS_INVALID: 'Refresh token is invalid',
+  USED_REFRESH_TOKEN_OR_NOT_EXIST: 'Used refresh token or not exist'
 } as const
