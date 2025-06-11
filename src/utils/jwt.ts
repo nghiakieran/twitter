@@ -1,16 +1,15 @@
 import jwt, { SignOptions } from 'jsonwebtoken'
-import { JWT_CONFIG } from '~/constants/config'
 import { TokenPayload } from '~/models/requests/User.requests'
 
 export const signToken = ({
   payload,
-  privateKey = JWT_CONFIG.JWT_SECRET,
+  privateKey,
   options = {
     algorithm: 'HS256'
   }
 }: {
   payload: string | Buffer | object
-  privateKey?: string
+  privateKey: string
   options?: SignOptions
 }) => {
   return new Promise<string>((resolve, reject) => {
@@ -24,13 +23,7 @@ export const signToken = ({
   })
 }
 
-export const verifyToken = ({
-  token,
-  secretOrPublicKey = JWT_CONFIG.JWT_SECRET
-}: {
-  token: string
-  secretOrPublicKey?: string
-}) => {
+export const verifyToken = ({ token, secretOrPublicKey }: { token: string; secretOrPublicKey: string }) => {
   return new Promise<TokenPayload>((resolve, reject) => {
     jwt.verify(token, secretOrPublicKey, (err, decoded) => {
       if (err) {
