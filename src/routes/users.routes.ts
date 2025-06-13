@@ -7,7 +7,8 @@ import {
   registerController,
   forgotPasswordController,
   verifyForgotPasswordController,
-  resetPasswordController
+  resetPasswordController,
+  getMeController
 } from '~/controllers/users.controllers'
 import {
   accessTokenValidator,
@@ -23,6 +24,7 @@ import { wrapRequestHandler } from '~/utils/handlers'
 
 const userRouter = Router()
 
+// Authentication routes
 userRouter.post('/login', loginValidator, wrapRequestHandler(loginController))
 userRouter.post('/register', registerValidator, wrapRequestHandler(registerController))
 userRouter.post('/logout', accessTokenValidator, refreshTokenValidator, wrapRequestHandler(logoutController))
@@ -35,5 +37,8 @@ userRouter.post(
   wrapRequestHandler(verifyForgotPasswordController)
 )
 userRouter.post('/reset-password', resetPasswordValidator, wrapRequestHandler(resetPasswordController))
+
+// User profile routes
+userRouter.get('/me', accessTokenValidator, wrapRequestHandler(getMeController))
 
 export default userRouter
