@@ -14,7 +14,8 @@ import {
   TokenPayload,
   UpdateMeReqBody,
   VerifyEmailReqBody,
-  VerifyForgotPasswordReqBody
+  VerifyForgotPasswordReqBody,
+  GetProfileReqParams
 } from '~/models/requests/User.requests'
 import User from '~/models/schemas/User.schema'
 import databaseService from '~/services/database.services'
@@ -138,6 +139,15 @@ export const updateMeController = async (
   const user = await usersService.updateMe(user_id, body)
   return res.json({
     message: USERS_MESSAGES.UPDATE_ME_SUCCESS,
+    result: user
+  })
+}
+
+export const getProfileController = async (req: Request<GetProfileReqParams>, res: Response): Promise<Response> => {
+  const { username } = req.params
+  const user = await usersService.getProfile(username)
+  return res.json({
+    message: USERS_MESSAGES.GET_PROFILE_SUCCESS,
     result: user
   })
 }

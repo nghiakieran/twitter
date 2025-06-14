@@ -9,7 +9,8 @@ import {
   verifyForgotPasswordController,
   resetPasswordController,
   getMeController,
-  updateMeController
+  updateMeController,
+  getProfileController
 } from '~/controllers/users.controllers'
 import { filterMiddleware } from '~/middlewares/common.middlewares'
 import {
@@ -27,25 +28,25 @@ import {
 import { UpdateMeReqBody } from '~/models/requests/User.requests'
 import { wrapRequestHandler } from '~/utils/handlers'
 
-const userRouter = Router()
+const usersRouter = Router()
 
 // Authentication routes
-userRouter.post('/login', loginValidator, wrapRequestHandler(loginController))
-userRouter.post('/register', registerValidator, wrapRequestHandler(registerController))
-userRouter.post('/logout', accessTokenValidator, refreshTokenValidator, wrapRequestHandler(logoutController))
-userRouter.post('/verify-email', emailVerifyTokenValidator, wrapRequestHandler(verifyEmailController))
-userRouter.post('/resend-verify-email', accessTokenValidator, wrapRequestHandler(resendVerifyEmailController))
-userRouter.post('/forgot-password', forgotPasswordValidator, wrapRequestHandler(forgotPasswordController))
-userRouter.post(
+usersRouter.post('/login', loginValidator, wrapRequestHandler(loginController))
+usersRouter.post('/register', registerValidator, wrapRequestHandler(registerController))
+usersRouter.post('/logout', accessTokenValidator, refreshTokenValidator, wrapRequestHandler(logoutController))
+usersRouter.post('/verify-email', emailVerifyTokenValidator, wrapRequestHandler(verifyEmailController))
+usersRouter.post('/resend-verify-email', accessTokenValidator, wrapRequestHandler(resendVerifyEmailController))
+usersRouter.post('/forgot-password', forgotPasswordValidator, wrapRequestHandler(forgotPasswordController))
+usersRouter.post(
   '/verify-forgot-password',
   verifyForgotPasswordTokenValidator,
   wrapRequestHandler(verifyForgotPasswordController)
 )
-userRouter.post('/reset-password', resetPasswordValidator, wrapRequestHandler(resetPasswordController))
+usersRouter.post('/reset-password', resetPasswordValidator, wrapRequestHandler(resetPasswordController))
 
 // User profile routes
-userRouter.get('/me', accessTokenValidator, wrapRequestHandler(getMeController))
-userRouter.patch(
+usersRouter.get('/me', accessTokenValidator, wrapRequestHandler(getMeController))
+usersRouter.patch(
   '/me',
   accessTokenValidator,
   verifiedUserValidator,
@@ -62,5 +63,6 @@ userRouter.patch(
   ]),
   wrapRequestHandler(updateMeController)
 )
+usersRouter.get('/:username', wrapRequestHandler(getProfileController))
 
-export default userRouter
+export default usersRouter

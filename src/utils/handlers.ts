@@ -1,9 +1,11 @@
-import { NextFunction, Request, Response } from 'express'
+import { Request, Response, NextFunction } from 'express'
+import { ParamsDictionary } from 'express-serve-static-core'
+import { ParsedQs } from 'qs'
 
-type AsyncHandler = (req: Request, res: Response, next: NextFunction) => Promise<any> // Cho phép return bất kỳ Promise gì
-
-export const wrapRequestHandler = (handler: AsyncHandler) => {
-  return (req: Request, res: Response, next: NextFunction) => {
+export const wrapRequestHandler = <Params = ParamsDictionary, ResBody = any, ReqBody = any, ReqQuery = ParsedQs>(
+  handler: (req: Request<Params, ResBody, ReqBody, ReqQuery>, res: Response, next: NextFunction) => Promise<any>
+) => {
+  return (req: Request<Params, ResBody, ReqBody, ReqQuery>, res: Response, next: NextFunction) => {
     handler(req, res, next).catch(next)
   }
 }
