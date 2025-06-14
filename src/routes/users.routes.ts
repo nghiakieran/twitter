@@ -19,6 +19,7 @@ import {
   refreshTokenValidator,
   registerValidator,
   resetPasswordValidator,
+  updateMeValidator,
   verifiedUserValidator,
   verifyForgotPasswordTokenValidator
 } from '~/middlewares/users.middlewares'
@@ -42,6 +43,12 @@ userRouter.post('/reset-password', resetPasswordValidator, wrapRequestHandler(re
 
 // User profile routes
 userRouter.get('/me', accessTokenValidator, wrapRequestHandler(getMeController))
-userRouter.patch('/me', accessTokenValidator, verifiedUserValidator, wrapRequestHandler(updateMeController))
+userRouter.patch(
+  '/me',
+  accessTokenValidator,
+  verifiedUserValidator,
+  updateMeValidator,
+  wrapRequestHandler(updateMeController)
+)
 
 export default userRouter
