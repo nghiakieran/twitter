@@ -187,7 +187,7 @@ class UsersService {
         }
       }
     )
-    // Gui email send link den nguoi dung: https://www.com/forgot-password?token=token
+    // Gui email send link den ng dung: https://www.com/forgot-password?token=token
     console.log('forgot_password_token: ', forgot_password_token)
     return {
       message: USERS_MESSAGES.CHECK_EMAIL_TO_RESET_PASSWORD
@@ -263,7 +263,7 @@ class UsersService {
 
   async getProfile(username: string) {
     const user = await databaseService.users.findOne(
-      { name: username },
+      { username },
       {
         projection: {
           password: 0,
@@ -313,7 +313,7 @@ class UsersService {
         message: USERS_MESSAGES.UNFOLLOW_SUCCESS
       }
     }
-    // Tìm không thấy, nghĩa là chưa follow
+    // If the user is not followed, return a message
     return {
       message: USERS_MESSAGES.NOT_FOLLOWED
     }
