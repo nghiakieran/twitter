@@ -15,7 +15,8 @@ import {
   UpdateMeReqBody,
   VerifyEmailReqBody,
   VerifyForgotPasswordReqBody,
-  GetProfileReqParams
+  GetProfileReqParams,
+  FollowReqBody
 } from '~/models/requests/User.requests'
 import User from '~/models/schemas/User.schema'
 import databaseService from '~/services/database.services'
@@ -146,8 +147,23 @@ export const updateMeController = async (
 export const getProfileController = async (req: Request<GetProfileReqParams>, res: Response): Promise<Response> => {
   const { username } = req.params
   const user = await usersService.getProfile(username)
+  if (!user) {
+    return res.status(HTTP_STATUS.NOT_FOUND).json({
+      message: USERS_MESSAGES.USER_NOT_FOUND
+    })
+  }
   return res.json({
     message: USERS_MESSAGES.GET_PROFILE_SUCCESS,
     result: user
   })
+}
+
+export const followController = async (
+  req: Request<ParamsDictionary, any, FollowReqBody>,
+  res: Response
+): Promise<Response> => {
+  const { user_id } = req.decode_authorization as TokenPayload
+  const { followed_user_id } = req.body
+  const result = await usersService.follow(user_id, followed_user_id)
+  return res.json(result)
 }
