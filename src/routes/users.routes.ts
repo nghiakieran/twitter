@@ -17,6 +17,7 @@ import {
 import { filterMiddleware } from '~/middlewares/common.middlewares'
 import {
   accessTokenValidator,
+  changePasswordValidator,
   emailVerifyTokenValidator,
   followValidator,
   forgotPasswordValidator,
@@ -47,6 +48,13 @@ usersRouter.post(
   wrapRequestHandler(verifyForgotPasswordController)
 )
 usersRouter.post('/reset-password', resetPasswordValidator, wrapRequestHandler(resetPasswordController))
+usersRouter.put(
+  '/change-password',
+  accessTokenValidator,
+  verifiedUserValidator,
+  changePasswordValidator,
+  wrapRequestHandler(resetPasswordController)
+)
 
 // User profile routes
 usersRouter.get('/me', accessTokenValidator, wrapRequestHandler(getMeController))

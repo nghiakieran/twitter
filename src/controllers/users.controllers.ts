@@ -17,7 +17,8 @@ import {
   VerifyForgotPasswordReqBody,
   GetProfileReqParams,
   FollowReqBody,
-  UnfollowReqParams
+  UnfollowReqParams,
+  ChangePasswordReqBody
 } from '~/models/requests/User.requests'
 import User from '~/models/schemas/User.schema'
 import databaseService from '~/services/database.services'
@@ -114,10 +115,10 @@ export const verifyForgotPasswordController = async (
 }
 
 export const resetPasswordController = async (
-  req: Request<ParamsDictionary, any, ResetPasswordReqBody>,
+  req: Request<ParamsDictionary, any, ChangePasswordReqBody>,
   res: Response
 ): Promise<Response> => {
-  const { user_id } = req.decoded_forgot_password_token as TokenPayload
+  const { user_id } = req.decode_authorization as TokenPayload
   const { password } = req.body
   const result = await usersService.resetPassword(user_id, password)
   return res.json(result)
@@ -173,5 +174,15 @@ export const unfollowController = async (req: Request<UnfollowReqParams>, res: R
   const { user_id } = req.decode_authorization as TokenPayload
   const { user_id: followed_user_id } = req.params
   const result = await usersService.unfollow(user_id, followed_user_id)
+  return res.json(result)
+}
+
+export const changePasswordController = async (
+  req: Request<ParamsDictionary, any, ResetPasswordReqBody>,
+  res: Response
+): Promise<Response> => {
+  const { user_id } = req.decode_authorization as TokenPayload
+  const { password } = req.body
+  const result = await usersService.changePassword(user_id, password)
   return res.json(result)
 }
